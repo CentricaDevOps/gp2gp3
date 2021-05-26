@@ -1,0 +1,13 @@
+__pycache__/
+*swp
+build/
+.pytest_cache/
+package/
+tags
+dev
+*.d
+deployed/
+deployments/
+vendor/
+dist/
+.chalice/
