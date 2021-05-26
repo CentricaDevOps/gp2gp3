@@ -1,0 +1,41 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+Description: gp2-3 worker lambda execution role
+
+Resources:
+  DirectorLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+            Action:
+              - sts:AssumeRole
+      Path: /
+      RoleName: sreGP23WorkerLambdaRole
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+      Policies:
+        -
+          PolicyName: sreGP23WorkerLambdaPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Sid: allowAssumeRole
+                Effect: "Allow"
+                Action:
+                  - "sts:AssumeRole"
+                Resource:
+                  - "*"
+              -
+                Sid: allowParamStore
+                Effect: "Allow"
+                Action:
+                  - "ssm:GetParameter"
+                Resource:
+                  - !Sub "arn:aws:ssm:eu-west-1:${AWS::AccountId}:parameter/sre/wavefront/directingest"

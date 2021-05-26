@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "gp2gp3"
+version = "0.2.1"
+description = "Automatically migrate from gp2 EBS Volumes to gp3"
+authors = ["ccdale <chris.allison@centrica.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+boto3 = "^1.17.48"
+wavefront-pyformance = "^1.1.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.3"
+chalice = "^1.22.3"
+awslogs = "^0.14.0"
+
+[tool.poetry.scripts]
+jprint = "printjson:jprint"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

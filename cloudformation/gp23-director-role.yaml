@@ -1,0 +1,49 @@
+---
+AWSTemplateFormatVersion: 2010-09-09
+Description: gp2-3 director lambda execution role
+
+Resources:
+  DirectorLambdaRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - "lambda.amazonaws.com"
+            Action:
+              - sts:AssumeRole
+      Path: /
+      RoleName: sreGP23DirectorLambdaRole
+      ManagedPolicyArns:
+        - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+      Policies:
+        -
+          PolicyName: sreGP23DirectorLambdaPolicy
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              -
+                Sid: allowLambdaInvoke
+                Effect: "Allow"
+                Action:
+                  - "lambda:InvokeFunction"
+                Resource:
+                  - !Sub "arn:aws:lambda:*:${AWS::AccountId}:function:*"
+              -
+                Sid: allowDescribeRegions
+                Effect: "Allow"
+                Action:
+                  - "ec2:DescribeRegions"
+                Resource:
+                  - "*"
+              -
+                Sid: allowOrgAccounts
+                Effect: "Allow"
+                Action:
+                  - "organizations:ListAccounts"
+                Resource:
+                  - "*"
+
