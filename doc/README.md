@@ -24,7 +24,7 @@ parallel processing method will be employed to collect information about the
 Volumes. This will be a Director => Worker architecture, with one Worker per
 account starting a thread per region in that account.
 
-See [Director Lambda](director.md) for an overview of this architecture.
+See [Director/Worker Lambda](directorworkerarch.md) for an overview of this architecture.
 
 Essentially, each account and region in that account will autonomously manage
 the migration of it's Volumes from gp2 to gp3, without reference to other
