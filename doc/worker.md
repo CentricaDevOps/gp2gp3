@@ -3,7 +3,7 @@
 A simple lambda function that starts a worker per region, returning data on the
 Q.
 
-This function is in file [chalicelib/secondary.py](../chalicelib/secondary.py)
+These functions are in file [chalicelib/secondary.py](../chalicelib/secondary.py)
 ```python
 def secondaryLF(event, context):
     # test that we have the required keys in the event dictionary
