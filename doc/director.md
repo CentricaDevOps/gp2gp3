@@ -34,4 +34,4 @@ The only thing left to manage is the memory size you give your Lambda functions.
 and 512 MB of memory to prevent premature function killing due to memory exhaustion.  With 120 accounts the Director is
 comfortable with 256MB, though the default of 128MB is leaving things a little tight.
 
-(Back to README)[README.md]
+[Back to README](README.md)
