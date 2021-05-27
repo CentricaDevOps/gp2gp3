@@ -5,6 +5,7 @@
 The meat of the process are these four functions, these are run together on a
 thread per region, for one particular account.
 
+These functions are in file [chalicelib/volumes.py](../chalicelib/volumes.py)
 ```python
 def getVolumes(acctid=None, region="eu-west-1", filters=None, logid=0):
     """Obtain a list of volumes in the specified account/region."""

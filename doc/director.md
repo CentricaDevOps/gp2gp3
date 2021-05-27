@@ -1,5 +1,8 @@
 # Director Lambda for GP2 => GP3 Transition Process
 
+The director lambda invokes a worker per child account in the AWS Organisation.
+
+This function is in file [chalicelib/primary.py](../chalicelib/primary.py)
 ```python
 def doPrimary():
     """Director code:
