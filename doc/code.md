@@ -2,4 +2,4 @@
 
 Read these in order, working from the inside out:
 
-(Worker Thread)[workerthread.md]
+[Worker Thread](workerthread.md)
