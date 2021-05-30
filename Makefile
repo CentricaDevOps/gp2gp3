@@ -41,7 +41,7 @@ hivedelete:
 
 vodadeploy:
 	# test we have the correct profile enabled
-	AWS_PROFILE=vodafone-payer aws organizations list-accounts |grep Prod-CC-TN >/dev/null
+	AWS_PROFILE=vodafone-payer aws organizations list-accounts |grep aws-vodafone-payer+Prod-CC-GBS >/dev/null
 	rm .chalice/config.json
 	rm .chalice/deployed
 	cd .chalice && ln -s voda-config.json config.json && ln -s voda-deployed deployed
@@ -50,7 +50,7 @@ vodadeploy:
 
 vodadelete:
 	# test we have the correct profile enabled
-	AWS_PROFILE=vodafone-payer aws organizations list-accounts |grep Prod-CC-TN >/dev/null
+	AWS_PROFILE=vodafone-payer aws organizations list-accounts |grep aws-vodafone-payer+Prod-CC-GBS >/dev/null
 	rm .chalice/config.json
 	rm .chalice/deployed
 	cd .chalice && ln -s voda-config.json config.json && ln -s voda-deployed deployed
@@ -59,7 +59,7 @@ vodadelete:
 
 sapdeploy:
 	# test we have the correct profile enabled
-	AWS_PROFILE=sap-payer aws organizations list-accounts |grep GFSSAP-CENBACKUP >/dev/null
+	AWS_PROFILE=sap-payer aws organizations list-accounts |grep aws-GFSSAP-payer+CENNONPROD1 >/dev/null
 	rm .chalice/config.json
 	rm .chalice/deployed
 	cd .chalice && ln -s sap-config.json config.json && ln -s sap-deployed deployed
@@ -68,7 +68,7 @@ sapdeploy:
 
 sapdelete:
 	# test we have the correct profile enabled
-	AWS_PROFILE=sap-payer aws organizations list-accounts |grep GFSSAP-CENBACKUP >/dev/null
+	AWS_PROFILE=sap-payer aws organizations list-accounts |grep aws-GFSSAP-payer+CENNONPROD1 >/dev/null
 	rm .chalice/config.json
 	rm .chalice/deployed
 	cd .chalice && ln -s sap-config.json config.json && ln -s sap-deployed deployed
