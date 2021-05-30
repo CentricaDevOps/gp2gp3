@@ -45,7 +45,7 @@ vodadeploy:
 	rm .chalice/config.json
 	rm .chalice/deployed
 	cd .chalice && ln -s voda-config.json config.json && ln -s voda-deployed deployed
-	AWS_DEFAULT_REGION=eu-west-1 AWS_PROFILE=vodafone-payer poetry run chalice deploy --stage=prod
+	AWS_DEFAULT_REGION=eu-central-1 AWS_PROFILE=vodafone-payer poetry run chalice deploy --stage=prod
 
 
 vodadelete:
@@ -54,7 +54,7 @@ vodadelete:
 	rm .chalice/config.json
 	rm .chalice/deployed
 	cd .chalice && ln -s voda-config.json config.json && ln -s voda-deployed deployed
-	AWS_DEFAULT_REGION=eu-west-1 AWS_PROFILE=vodafone-payer poetry run chalice delete --stage=prod
+	AWS_DEFAULT_REGION=eu-central-1 AWS_PROFILE=vodafone-payer poetry run chalice delete --stage=prod
 
 
 sapdeploy:
