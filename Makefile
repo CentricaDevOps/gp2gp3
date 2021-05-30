@@ -26,14 +26,14 @@ m2delete:
 
 hivedeploy:
 	# test we have the correct profile enabled
-	AWS_PROFILE=awsbilling aws organizations list-accounts >/dev/null
+	AWS_PROFILE=awsbilling aws organizations list-accounts |grep honeycomb-prod >/dev/null
 	rm .chalice/config.json
 	rm .chalice/deployed
 	cd .chalice && ln -s hive-config.json config.json && ln -s hive-deployed deployed
 	AWS_PROFILE=awsbilling poetry run chalice deploy --stage=prod
 
 hivedelete:
-	AWS_PROFILE=awsbilling aws organizations list-accounts >/dev/null
+	AWS_PROFILE=awsbilling aws organizations list-accounts |grep honeycomb-prod >/dev/null
 	rm .chalice/config.json
 	rm .chalice/deployed
 	cd .chalice && ln -s hive-config.json config.json && ln -s hive-deployed deployed
