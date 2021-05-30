@@ -13,7 +13,7 @@ m2deploy:
 	rm .chalice/config.json
 	rm .chalice/deployed
 	cd .chalice && ln -s mode2-config.json config.json && ln -s mode2-deployed deployed
-	AWS_DEFAULT_REGION=eu-west-1 poetry run chalice deploy --stage=prod
+	AWS_DEFAULT_REGION=eu-west-1 AWS_PROFILE=payer poetry run chalice deploy --stage=prod
 
 
 m2delete:
@@ -22,7 +22,7 @@ m2delete:
 	rm .chalice/config.json
 	rm .chalice/deployed
 	cd .chalice && ln -s mode2-config.json config.json && ln -s mode2-deployed deployed
-	AWS_DEFAULT_REGION=eu-west-1 poetry run chalice delete --stage=prod
+	AWS_DEFAULT_REGION=eu-west-1 AWS_PROFILE=payer poetry run chalice delete --stage=prod
 
 hivedeploy:
 	# test we have the correct profile enabled
@@ -45,7 +45,7 @@ vodadeploy:
 	rm .chalice/config.json
 	rm .chalice/deployed
 	cd .chalice && ln -s voda-config.json config.json && ln -s voda-deployed deployed
-	AWS_DEFAULT_REGION=eu-west-1 poetry run chalice deploy --stage=prod
+	AWS_DEFAULT_REGION=eu-west-1 AWS_PROFILE=vodafone-payer poetry run chalice deploy --stage=prod
 
 
 vodadelete:
@@ -54,7 +54,7 @@ vodadelete:
 	rm .chalice/config.json
 	rm .chalice/deployed
 	cd .chalice && ln -s voda-config.json config.json && ln -s voda-deployed deployed
-	AWS_DEFAULT_REGION=eu-west-1 poetry run chalice delete --stage=prod
+	AWS_DEFAULT_REGION=eu-west-1 AWS_PROFILE=vodafone-payer poetry run chalice delete --stage=prod
 
 
 sapdeploy:
@@ -63,7 +63,7 @@ sapdeploy:
 	rm .chalice/config.json
 	rm .chalice/deployed
 	cd .chalice && ln -s sap-config.json config.json && ln -s sap-deployed deployed
-	AWS_DEFAULT_REGION=eu-west-1 poetry run chalice deploy --stage=prod
+	AWS_DEFAULT_REGION=eu-west-1 AWS_PROFILE=sap-payer poetry run chalice deploy --stage=prod
 
 
 sapdelete:
@@ -72,7 +72,7 @@ sapdelete:
 	rm .chalice/config.json
 	rm .chalice/deployed
 	cd .chalice && ln -s sap-config.json config.json && ln -s sap-deployed deployed
-	AWS_DEFAULT_REGION=eu-west-1 poetry run chalice delete --stage=prod
+	AWS_DEFAULT_REGION=eu-west-1 AWS_PROFILE=sap-payer poetry run chalice delete --stage=prod
 
 #croles:
 #aws cloudformation create-stack --capabilities CAPABILITY_NAMED_IAM --stack-name sreGP23DirectorRoleCF --template-body file://cloudformation/gp23-director-role.yaml
