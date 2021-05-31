@@ -2,6 +2,8 @@
 
 This project will automatically migrate EBS volumes from gp2 to gp3.
 
+See [documentation](doc/README.md) for full documentation.
+
 The intention is to minimise the possible impact of such a migration by processing each volume individually per region per
 account.  The code will wait for the gp3 optimisation to conclude before migrating the next volume in a region in an account.
 
