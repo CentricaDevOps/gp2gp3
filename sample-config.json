@@ -1,0 +1,46 @@
+{
+    "version": "2.0",
+    "app_name": "gp2gp3",
+    "automatic_layer": true,
+    "tags": {
+        "Name": "gp2gp3-lambda",
+        "product": "gp2gp3",
+        "role": "gp2gp3 lambda"
+    },
+    "environment_variables": {
+        "WAVEFRONT_URL": "https://YOUR-WF-TENENT.wavefront.com",
+        "REPORT_STANDARD_METRICS": "True",
+        "ACCOUNTSTABLE": "This-is-not-required-anymore",
+        "SECONDARYLAMBDA": "arn:aws:lambda:AWS-REGION:AWS-ACCOUNT-NUMBER:function:gp2gp3-prod-secondaryLambda",
+        "ASSUMEROLENAME": "OrganizationAccountAccessRole",
+        "TRANSITIONVOLUMES": "false",
+        "WFSSMPATH": "/sre/wavefront/directingest",
+        "ORGID": "YOUR-AWS-ORGANISATION-ID",
+        "ORGNAME": "YOUR-AWS-ORGANISATION-NAME"
+    },
+    "stages": {
+        "prod": {
+            "lambda_functions": {
+                "primaryLambda": {
+                    "manage_iam_role": false,
+                    "iam_role_arn":"arn:aws:iam::AWS-ACCOUNT-NUMBER:role/sreGP23DirectorLambdaRole",
+                    "lambda_memory_size": 256,
+                    "lambda_timeout": 60
+                },
+                "secondaryLambda": {
+                    "manage_iam_role": false,
+                    "iam_role_arn":"arn:aws:iam::AWS-ACCOUNT-NUMBER:role/sreGP23WorkerLambdaRole",
+                    "lambda_memory_size": 512,
+                    "lambda_timeout": 300
+                }
+            },
+            "environment_variables": {
+                "environment": "prod"
+            },
+            "tags": {
+                "environment": "prod"
+            }
+        }
+    }
+}
+

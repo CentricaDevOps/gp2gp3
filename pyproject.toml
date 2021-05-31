@@ -3,6 +3,9 @@ name = "gp2gp3"
 version = "0.2.1"
 description = "Automatically migrate from gp2 EBS Volumes to gp3"
 authors = ["ccdale <chris.allison@centrica.com>"]
+license = "GPL-3.0-or-later"
+readme = "README.md"
+repository = "https://github.com/CentricaDevOps/gp2gp3.git"
 
 [tool.poetry.dependencies]
 python = "^3.8"

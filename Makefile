@@ -73,11 +73,3 @@ sapdelete:
 	rm .chalice/deployed
 	cd .chalice && ln -s sap-config.json config.json && ln -s sap-deployed deployed
 	AWS_DEFAULT_REGION=eu-west-1 AWS_PROFILE=sap-payer poetry run chalice delete --stage=prod
-
-#croles:
-#aws cloudformation create-stack --capabilities CAPABILITY_NAMED_IAM --stack-name sreGP23DirectorRoleCF --template-body file://cloudformation/gp23-director-role.yaml
-#aws cloudformation create-stack --capabilities CAPABILITY_NAMED_IAM --stack-name sreGP23WorkerRoleCF --template-body file://cloudformation/gp23-worker-role.yaml
-#
-#uroles:
-#aws cloudformation update-stack --capabilities CAPABILITY_NAMED_IAM --stack-name sreGP23WorkerRoleCF --template-body file://cloudformation/gp23-worker-role.yaml
-#aws cloudformation update-stack --capabilities CAPABILITY_NAMED_IAM --stack-name sreGP23DirectorRoleCF --template-body file://cloudformation/gp23-director-role.yaml
