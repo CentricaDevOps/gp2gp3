@@ -307,3 +307,21 @@ def getParameter(ppath, decrypt=True):
         msg = f"{ename} Exception at line {lineno} in function {fname}: {e}"
         print(msg)
         raise
+
+
+def getParams(paramlist, decrypt=True):
+    try:
+        vals = None
+        ssm = getClient("ssm")
+        prams = ssm.get_parameters(paramlist, WithDecrypt=decrypt)
+        if "Parameters" in prams:
+            vals = [pram for pram in prams["Parameters"]]
+        return vals
+    except Exception as e:
+        exci = sys.exc_info()[2]
+        lineno = exci.tb_lineno
+        fname = exci.tb_frame.f_code.co_name
+        ename = type(e).__name__
+        msg = f"{ename} Exception at line {lineno} in function {fname}: {e}"
+        print(msg)
+        raise
