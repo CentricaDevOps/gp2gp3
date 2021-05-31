@@ -59,11 +59,3 @@ To deploy the lambdas
 ```
 make deploy
 ```
-
-## Tests
-
-Ensure you have an active chaim profile called `sdev` to the account `sre-dev`.
-
-```
-poetry run pytest
-```
