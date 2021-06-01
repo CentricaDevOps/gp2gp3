@@ -26,6 +26,36 @@ import time
 import chalicelib.account as act
 
 
+def setupParameters(server="dev_test"):
+    try:
+        gprams = {}
+        base = f"/service_now/{server}"
+        plist = [
+            f"{base}/host",
+            f"{base}/username",
+            f"{base}/password",
+            f"{base}/template_id",
+        ]
+        prams = act.getParams(plist)
+        for pram in prams:
+            if pram["Name"].startswith(base):
+                tmp = pram["Name"].split("/")
+                gprams[tmp[-1]] = pram["Value"]
+            elif pram["Name"] == "/src/wavefront/directingest":
+                gprams["wfkey"] = pram["Value"]
+            else:
+                raise Exception(f"Unknown param returned: {pram}")
+        return gprams
+    except Exception as e:
+        exci = sys.exc_info()[2]
+        lineno = exci.tb_lineno
+        fname = exci.tb_frame.f_code.co_name
+        ename = type(e).__name__
+        msg = f"{ename} Exception at line {lineno} in function {fname}: {e}"
+        print(msg)
+        raise
+
+
 def doPrimary():
     """Director code:
 
@@ -40,6 +70,8 @@ def doPrimary():
         regions = act.getRegions()
         dotransition = os.environ.get("TRANSITIONVOLUMES", "false")
         lam = act.getClient("lambda")
+        snowsrv = os.environ.get("SNOWSERVER", "dev_test")
+        prams = setupParameters(snowsrv)
         seclambdaarn = os.environ.get("SECONDARYLAMBDA", "NOTSET")
         if seclambdaarn == "NOTSET":
             raise Exception(
@@ -59,6 +91,7 @@ def doPrimary():
                 "tomorrow": tomorrow,
                 "transitionvolumes": os.environ.get("TRANSITIONVOLUMES", "false"),
             }
+            xdict.update(prams)
             kwargs["Payload"] = json.dumps(xdict)
             res = lam.invoke(**kwargs)
             if res["StatusCode"] != 202:

@@ -46,4 +46,19 @@ Resources:
                   - "organizations:ListAccounts"
                 Resource:
                   - "*"
+              -
+                Sid: allowParamStore
+                Effect: "Allow"
+                Action:
+                  - "ssm:GetParameter"
+                Resource:
+                  - !Sub "arn:aws:ssm:eu-west-1:${AWS::AccountId}:parameter/sre/wavefront/directingest"
+                  - !Sub "arn:aws:ssm:eu-west-1:${AWS::AccountId}:parameter/service_now/dev_test/host"
+                  - !Sub "arn:aws:ssm:eu-west-1:${AWS::AccountId}:parameter/service_now/dev_test/username"
+                  - !Sub "arn:aws:ssm:eu-west-1:${AWS::AccountId}:parameter/service_now/dev_test/template_id"
+                  - !Sub "arn:aws:ssm:eu-west-1:${AWS::AccountId}:parameter/service_now/dev_test/password"
+                  - !Sub "arn:aws:ssm:eu-west-1:${AWS::AccountId}:parameter/service_now/prod/host"
+                  - !Sub "arn:aws:ssm:eu-west-1:${AWS::AccountId}:parameter/service_now/prod/username"
+                  - !Sub "arn:aws:ssm:eu-west-1:${AWS::AccountId}:parameter/service_now/prod/template_id"
+                  - !Sub "arn:aws:ssm:eu-west-1:${AWS::AccountId}:parameter/service_now/prod/password"
 

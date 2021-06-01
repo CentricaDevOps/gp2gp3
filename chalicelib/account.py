@@ -313,7 +313,7 @@ def getParams(paramlist, decrypt=True):
     try:
         vals = None
         ssm = getClient("ssm")
-        prams = ssm.get_parameters(paramlist, WithDecrypt=decrypt)
+        prams = ssm.get_parameters(Names=paramlist, WithDecryption=decrypt)
         if "Parameters" in prams:
             vals = [pram for pram in prams["Parameters"]]
         return vals

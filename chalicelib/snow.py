@@ -21,3 +21,66 @@
 import sys
 
 import requests
+
+import chalicelib.account as act
+
+GPRAMS = {}
+
+
+def setupParameters(server="dev_test"):
+    try:
+        global GPRAMS
+        base = f"/service_now/{server}"
+        plist = [
+            f"{base}/host",
+            f"{base}/username",
+            f"{base}/password",
+            f"{base}/template_id",
+        ]
+        prams = act.getParams(plist)
+        for pram in prams:
+            tmp = pram["Name"].split("/")
+            GPRAMS[tmp[-1]] = pram["Value"]
+    except Exception as e:
+        exci = sys.exc_info()[2]
+        lineno = exci.tb_lineno
+        fname = exci.tb_frame.f_code.co_name
+        ename = type(e).__name__
+        msg = f"{ename} Exception at line {lineno} in function {fname}: {e}"
+        print(msg)
+        raise
+
+
+def getBaseUrl(server="dev_test"):
+    try:
+        global GPRAMS
+        if len(GPRAMS) == 0:
+            setupParameters(server="dev_test")
+        url = f'https://{GPRAMS["host"]}/api/sn_chg_rest/change/standard'
+        return url
+    except Exception as e:
+        exci = sys.exc_info()[2]
+        lineno = exci.tb_lineno
+        fname = exci.tb_frame.f_code.co_name
+        ename = type(e).__name__
+        msg = f"{ename} Exception at line {lineno} in function {fname}: {e}"
+        print(msg)
+        raise
+
+
+def newChangeRequest():
+    try:
+        global GPRAMS
+        if len(GPRAMS) == 0:
+            setupParameters(server="dev_test")
+        url = f'https://{GPRAMS["host"]}/api/sn_chg_rest/change/standard/{GPRAMS["template_id"]}'
+        # resp = requests.get(url, auth=(f'GPRAMS["username"]}', f'GPRAMS["password"]}')
+        return url
+    except Exception as e:
+        exci = sys.exc_info()[2]
+        lineno = exci.tb_lineno
+        fname = exci.tb_frame.f_code.co_name
+        ename = type(e).__name__
+        msg = f"{ename} Exception at line {lineno} in function {fname}: {e}"
+        print(msg)
+        raise

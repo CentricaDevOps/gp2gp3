@@ -2,7 +2,7 @@
 
 import pytest
 
-import gp2gp3.volumes as vl
+import chalicelib.volumes as vl
 
 
 def test_getGPVols():
