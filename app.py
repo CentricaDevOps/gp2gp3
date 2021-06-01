@@ -73,8 +73,9 @@ def primaryLambda(event):
 @app.lambda_function()
 def secondaryLambda(event, context):
     try:
-        getWFKey()
+        # getWFKey()
         # print(f"event: {event}")
+        os.environ["WAVEFRONT_API_TOKEN"] = event["wfkey"]
         SEC.secondaryLF(event, context)
     except Exception as e:
         exci = sys.exc_info()[2]
