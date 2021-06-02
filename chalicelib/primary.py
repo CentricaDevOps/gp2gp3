@@ -35,6 +35,7 @@ def setupParameters(server="dev_test"):
             f"{base}/username",
             f"{base}/password",
             f"{base}/template_id",
+            "/src/wavefront/directingest",
         ]
         prams = act.getParams(plist)
         for pram in prams:
