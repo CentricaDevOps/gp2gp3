@@ -90,10 +90,9 @@ def changeRequest(snow, volid, acctname, acctid, region):
                     return True
             except KeyError:
                 print(f"ValueError: path result.number.value not found in {jresp}")
-        else:
-            ggMetric(f"{orgid}.{orgname}.{acctid}.{acctname}.{region}.snow.fail", 1)
-            print(resp.status_code)
-            print(resp.text)
+        ggMetric(f"{orgid}.{orgname}.{acctid}.{acctname}.{region}.snow.fail", 1)
+        print(resp.status_code)
+        print(resp.text)
         return False
     except Exception as e:
         exci = sys.exc_info()[2]
