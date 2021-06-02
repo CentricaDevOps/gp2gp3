@@ -70,7 +70,7 @@ def doPrimary():
         regions = act.getRegions()
         dotransition = os.environ.get("TRANSITIONVOLUMES", "false")
         lam = act.getClient("lambda")
-        snowsrv = os.environ.get("SNOWSERVER", "dev_test")
+        snowsrv = os.environ.get("SNOWSRV", "dev_test")
         prams = setupParameters(snowsrv)
         seclambdaarn = os.environ.get("SECONDARYLAMBDA", "NOTSET")
         if seclambdaarn == "NOTSET":
