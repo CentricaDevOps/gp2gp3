@@ -466,7 +466,7 @@ python-versions = "*"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "47615939a885a1c352b3c388a888faa3ad4f93dec314053fe70788c83ba86f55"
+content-hash = "5d408e8fa503da0419a902fb45bcbddad5ba7e3ce3d94bfb416926090aa6bdad"
 
 [metadata.files]
 accumulation-tree = [

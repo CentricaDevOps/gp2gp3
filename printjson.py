@@ -24,3 +24,7 @@ def jprint():
         msg = f"{ename} Exception at line {lineno} in function {fname}: {e}"
         print(msg)
         sys.exit(1)
+
+
+if __name__ == "__main__":
+    jprint()
