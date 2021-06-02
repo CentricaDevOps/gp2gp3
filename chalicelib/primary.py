@@ -31,11 +31,11 @@ def setupParameters(server="dev_test"):
         gprams = {}
         base = f"/service_now/{server}"
         plist = [
+            "/src/wavefront/directingest",
             f"{base}/host",
             f"{base}/username",
             f"{base}/password",
             f"{base}/template_id",
-            "/src/wavefront/directingest",
         ]
         prams = act.getParams(plist)
         for pram in prams:
