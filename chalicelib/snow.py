@@ -23,6 +23,8 @@ import sys
 
 import requests
 
+from chalicelib.wflambda import ggMetric
+
 
 def patchRequest(snow, sysid, state):
     try:
@@ -55,6 +57,8 @@ def patchRequest(snow, sysid, state):
 
 def changeRequest(snow, volid, acctname, acctid, region):
     try:
+        orgid = os.environ.get("ORGID", "unset")
+        orgname = os.environ.get("ORGNAME", "unset")
         sjdat = json.dumps(
             {"short_description": f"gp23.{acctid}.{acctname}.{region}.{volid}"}
         )
@@ -79,10 +83,15 @@ def changeRequest(snow, volid, acctname, acctid, region):
                         print(f"SNoW change request {sysid} {state} failed")
                         break
                 if len(donestates) == len(states):
+                    ggMetric(
+                        f"{orgid}.{orgname}.{acctid}.{acctname}.{region}.snow.success",
+                        1,
+                    )
                     return True
             except KeyError:
                 print(f"ValueError: path result.number.value not found in {jresp}")
         else:
+            ggMetric(f"{orgid}.{orgname}.{acctid}.{acctname}.{region}.snow.fail", 1)
             print(resp.status_code)
             print(resp.text)
         return False
