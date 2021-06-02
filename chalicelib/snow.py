@@ -19,6 +19,7 @@
 """Service-Now routines for the gp2gp3 project."""
 
 import json
+import os
 import sys
 
 import requests
