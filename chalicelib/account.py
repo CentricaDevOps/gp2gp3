@@ -235,11 +235,13 @@ def assumeRoleSession(rolename, acctid, region):
 
 def assumeRoleAlias(rolename, acctid, region):
     try:
+        alias = acctid
         sess = assumeRoleSession(rolename, acctid, region)
         iam = sess.client("iam")
         pages = iam.get_paginator("list_account_aliases")
         for page in pages.paginate():
-            alias = page["AccountAliases"][0]
+            if "AccountAliases" in page and len(page["AccountAliases"]) > 0:
+                alias = page["AccountAliases"][0]
         return alias
     except Exception as e:
         exci = sys.exc_info()[2]
