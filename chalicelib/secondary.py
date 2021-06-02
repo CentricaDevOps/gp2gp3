@@ -25,6 +25,7 @@ import threading
 
 import botocore
 import chalicelib.account as act
+from chalicelib.snow import changeRequest
 import chalicelib.volumes as vl
 from chalicelib.wflambda import wfwrapper
 
@@ -50,7 +51,9 @@ def checkCanDoTransition(dotransition, picked, volstate):
         raise
 
 
-def volsInRegion(region, logid, acctname, acctnum, ttl, Q, dotransition=False):
+def volsInRegion(
+    region, logid, acctname, acctnum, ttl, Q, dotransition=False, snow=None
+):
     """Retrieve list of all gp2/gp3 volumes in the region.
 
     Test to see if any of the gp3 volumes are still transitioning
@@ -84,6 +87,14 @@ def volsInRegion(region, logid, acctname, acctnum, ttl, Q, dotransition=False):
                         f"""{logid}: {acctnum} {acctname} {region}: Transitioning {vol["VolumeId"]} from gp2 to gp3"""
                     )
                     picked = True
+                    if changeRequest(snow, vol["VolumeId"], acctname, acctnum, region):
+                        print(
+                            f"""{logid}: {acctnum} {acctname} {region}: Updated Snow for vol {vol["VolumeId"]}"""
+                        )
+                    else:
+                        print(
+                            f"""{logid}: {acctnum} {acctname} {region}: Failed to updated Snow for vol {vol["VolumeId"]}"""
+                        )
                 else:
                     print(
                         f"""{logid}: {acctnum} {acctname} {region}: Failed to start transitioning volume {vol["VolumeId"]}."""
@@ -121,23 +132,27 @@ def testKeys(keys, xdict):
 @wfwrapper
 def secondaryLF(event, context):
     try:
-        reqkeys = ["regions", "acctnum", "tomorrow", "transitionvolumes"]
+        reqkeys = [
+            "regions",
+            "acctnum",
+            "tomorrow",
+            "transitionvolumes",
+            "wfkey",
+            "host",
+            "username",
+            "password",
+            "template_id",
+        ]
         testKeys(reqkeys, event)
         regions = event["regions"].split(",")
         acctnum = event["acctnum"]
         rolename = os.environ.get("ASSUMEROLENAME", "NOTSET")
-        # regions = testRegions(xregions, acctnum, rolename)
-        # xregions = act.assumeRoleGetRegions(rolename, acctnum)
-        # regions = xregions.split(",")
-        # print(f"allowed regions: {regions}")
         acctname = act.assumeRoleAlias(rolename, acctnum, "eu-west-1")
         tomorrow = event["tomorrow"]
-        dotransition = False
-        if event["transitionvolumes"] == "true":
-            dotransition = True
+        dotransition = True if event["transitionvolumes"] == "true" else False
         Q = queue.Queue()
         threads = []
-        gargs = [acctname, acctnum, tomorrow, Q, dotransition]
+        gargs = [acctname, acctnum, tomorrow, Q, dotransition, event]
         for xcn, region in enumerate(regions, start=1):
             targs = [region, xcn]
             targs.extend(gargs)

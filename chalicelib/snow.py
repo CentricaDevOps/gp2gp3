@@ -18,29 +18,31 @@
 #
 """Service-Now routines for the gp2gp3 project."""
 
+import json
 import sys
 
 import requests
 
-import chalicelib.account as act
 
-GPRAMS = {}
-
-
-def setupParameters(server="dev_test"):
+def patchRequest(snow, sysid, state):
     try:
-        global GPRAMS
-        base = f"/service_now/{server}"
-        plist = [
-            f"{base}/host",
-            f"{base}/username",
-            f"{base}/password",
-            f"{base}/template_id",
-        ]
-        prams = act.getParams(plist)
-        for pram in prams:
-            tmp = pram["Name"].split("/")
-            GPRAMS[tmp[-1]] = pram["Value"]
+        url = f'https://{snow["host"]}/api/sn_chg_rest/change/standard/{sysid}'
+        headers = {"Content-Type": "application/json", "Accept": "application/json"}
+        dat = {"state": state}
+        if state == "closed":
+            dat["close_code"] = "successful"
+            dat["close_notes"] = "update successful"
+        sjdat = json.dumps(dat)
+        resp = requests.patch(
+            url,
+            auth=(f'{snow["username"]}', f'{snow["password"]}'),
+            headers=headers,
+            data=sjdat,
+        )
+        if resp.status_code == 200:
+            return True
+        print(f"SNow patch request {state} failed: {resp.status_code}: {resp.text}")
+        return False
     except Exception as e:
         exci = sys.exc_info()[2]
         lineno = exci.tb_lineno
@@ -51,31 +53,39 @@ def setupParameters(server="dev_test"):
         raise
 
 
-def getBaseUrl(server="dev_test"):
+def changeRequest(snow, volid, acctname, acctid, region):
     try:
-        global GPRAMS
-        if len(GPRAMS) == 0:
-            setupParameters(server="dev_test")
-        url = f'https://{GPRAMS["host"]}/api/sn_chg_rest/change/standard'
-        return url
-    except Exception as e:
-        exci = sys.exc_info()[2]
-        lineno = exci.tb_lineno
-        fname = exci.tb_frame.f_code.co_name
-        ename = type(e).__name__
-        msg = f"{ename} Exception at line {lineno} in function {fname}: {e}"
-        print(msg)
-        raise
-
-
-def newChangeRequest():
-    try:
-        global GPRAMS
-        if len(GPRAMS) == 0:
-            setupParameters(server="dev_test")
-        url = f'https://{GPRAMS["host"]}/api/sn_chg_rest/change/standard/{GPRAMS["template_id"]}'
-        # resp = requests.get(url, auth=(f'GPRAMS["username"]}', f'GPRAMS["password"]}')
-        return url
+        sjdat = json.dumps(
+            {"short_description": f"gp23.{acctid}.{acctname}.{region}.{volid}"}
+        )
+        headers = {"Content-Type": "application/json", "Accept": "application/json"}
+        url = f'https://{snow["host"]}/api/sn_chg_rest/change/standard/{snow["template_id"]}'
+        resp = requests.post(
+            url,
+            auth=(f'{snow["username"]}', f'{snow["password"]}'),
+            headers=headers,
+            data=sjdat,
+        )
+        if resp.status_code == 200:
+            jresp = resp.json()
+            try:
+                sysid = jresp["result"]["sys_id"]["value"]
+                states = ["scheduled", "implement", "review", "closed"]
+                donestates = []
+                for state in states:
+                    if patchRequest(snow, sysid, state):
+                        donestates.append(state)
+                    else:
+                        print(f"SNoW change request {sysid} {state} failed")
+                        break
+                if len(donestates) == len(states):
+                    return True
+            except KeyError:
+                print(f"ValueError: path result.number.value not found in {jresp}")
+        else:
+            print(resp.status_code)
+            print(resp.text)
+        return False
     except Exception as e:
         exci = sys.exc_info()[2]
         lineno = exci.tb_lineno
