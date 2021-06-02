@@ -98,17 +98,20 @@ def getGPVols(acctid=None, acctname="", region="eu-west-1", logid=0):
             filters = [
                 {"Name": "modification-state", "Values": ["modifying", "optimizing"]}
             ]
-            states = ec2.describe_volumes_modifications(
-                VolumeIds=gp3ids, Filters=filters
-            )
-            mods = states.get("VolumesModifications", None)
-            if mods is not None:
-                if len(mods) > 0:
-                    gp3wait = {
-                        "region": region,
-                        "volid": mods[0]["VolumeId"],
-                        "progress": mods[0]["Progress"],
-                    }
+            try:
+                states = ec2.describe_volumes_modifications(
+                    VolumeIds=gp3ids, Filters=filters
+                )
+                mods = states.get("VolumesModifications", None)
+                if mods is not None:
+                    if len(mods) > 0:
+                        gp3wait = {
+                            "region": region,
+                            "volid": mods[0]["VolumeId"],
+                            "progress": mods[0]["Progress"],
+                        }
+            except botocore.exceptions.ClientError:
+                pass
         orgid = os.environ.get("ORGID", "unset")
         orgname = os.environ.get("ORGNAME", "unset")
         ggMetric(
