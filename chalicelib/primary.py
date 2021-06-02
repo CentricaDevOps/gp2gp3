@@ -31,7 +31,7 @@ def setupParameters(server="dev_test"):
         gprams = {}
         base = f"/service_now/{server}"
         plist = [
-            "/src/wavefront/directingest",
+            "/sre/wavefront/directingest",
             f"{base}/host",
             f"{base}/username",
             f"{base}/password",
@@ -42,7 +42,7 @@ def setupParameters(server="dev_test"):
             if pram["Name"].startswith(base):
                 tmp = pram["Name"].split("/")
                 gprams[tmp[-1]] = pram["Value"]
-            elif pram["Name"] == "/src/wavefront/directingest":
+            elif pram["Name"] == "/sre/wavefront/directingest":
                 gprams["wfkey"] = pram["Value"]
             else:
                 raise Exception(f"Unknown param returned: {pram}")
@@ -93,6 +93,7 @@ def doPrimary():
                 "transitionvolumes": os.environ.get("TRANSITIONVOLUMES", "false"),
             }
             xdict.update(prams)
+            # print(f"xdict: {xdict}")
             kwargs["Payload"] = json.dumps(xdict)
             res = lam.invoke(**kwargs)
             if res["StatusCode"] != 202:
