@@ -53,7 +53,7 @@ def getWFKey():
         raise
 
 
-@app.schedule(Rate(15, unit=Rate.MINUTES))
+@app.schedule(Rate(5, unit=Rate.MINUTES))
 def primaryLambda(event):
     """Trigger the primary lambda every 15 minutes."""
     try:
