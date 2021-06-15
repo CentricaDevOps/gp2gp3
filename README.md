@@ -74,8 +74,17 @@ You will need an AWS profile for the organisation account. Adjust the [Makefile]
 Worker Lambdas require a pre-defined role to run, create these roles with:
 
 ```
-aws --profile your-profile --region your-region cloudformation create-stack --capabilities CAPABILITY_NAMED_IAM --stack-name sreGP23DirectorRoleCF --template-body file://cloudformation/gp23-director-role.yaml
-aws --profile your-profile --region your-region cloudformation create-stack --capabilities CAPABILITY_NAMED_IAM --stack-name sreGP23WorkerRoleCF --template-body file://cloudformation/gp23-worker-role.yaml
+aws --profile your-profile --region your-region \
+cloudformation create-stack \
+--capabilities CAPABILITY_NAMED_IAM \
+--stack-name sreGP23DirectorRoleCF \
+--template-body file://cloudformation/gp23-director-role.yaml
+
+aws --profile your-profile --region your-region \
+cloudformation create-stack \
+--capabilities CAPABILITY_NAMED_IAM \
+--stack-name sreGP23WorkerRoleCF \
+--template-body file://cloudformation/gp23-worker-role.yaml
 ```
 
 To deploy the lambdas
