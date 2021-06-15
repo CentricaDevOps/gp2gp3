@@ -61,11 +61,11 @@ sample-config.json >.chalice/config.json
 
 Set the following environment variables as required in the config file:
 
-`IGNOREDISKS` - size in GB, any disk greater than this size will be skipped.
-`OLDESTFIRST` - set to "true" by default, will transition the disks in order of age.
-`WAVEFRONT_URL` - the url for direct ingestion by Wavefront.
-`WFSSMPATH` - the parameter store path to the Wavefront credential.
-`SNOWSRV` - the parameter store sub-path to the Service-Now credentials.
+* `IGNOREDISKS` - size in GB, any disk greater than this size will be skipped.
+* `OLDESTFIRST` - set to "true" by default, will transition the disks in order of age.
+* `WAVEFRONT_URL` - the url for direct ingestion by Wavefront.
+* `WFSSMPATH` - the parameter store path to the Wavefront credential.
+* `SNOWSRV` - the parameter store sub-path to the Service-Now credentials.
 
 Save this file as `.chalice/config.json`
 
