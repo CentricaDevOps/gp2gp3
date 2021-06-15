@@ -69,7 +69,6 @@ def doPrimary():
         oacctids = act.getAccountIdsOrg()
         acctids = [x["Id"] for x in oacctids if x["Status"] == "ACTIVE"]
         regions = act.getRegions()
-        dotransition = os.environ.get("TRANSITIONVOLUMES", "false")
         lam = act.getClient("lambda")
         snowsrv = os.environ.get("SNOWSRV", "dev_test")
         prams = setupParameters(snowsrv)
@@ -90,7 +89,11 @@ def doPrimary():
                 "acctnum": acct,
                 "regions": regions,
                 "tomorrow": tomorrow,
-                "transitionvolumes": os.environ.get("TRANSITIONVOLUMES", "false"),
+                "transitionvolumes": os.environ.get(
+                    "TRANSITIONVOLUMES", "false"
+                ).lower(),
+                "oldestfirst": os.environ.get("OLDESTFIRST", "true").lower(),
+                "ignoredisks": os.environ.get("IGNOREDISKS", "999"),
             }
             xdict.update(prams)
             # print(f"xdict: {xdict}")

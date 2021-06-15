@@ -44,17 +44,48 @@ mkdir .chalice
 
 Adjust the [Sample AWS Chalice Configuration](sample-config.json) for your AWS Organisation.
 
+### Organisation Account Configuration
+
 You will need to replace `AWS-ACCOUNT-NUMBER`, `AWS-REGION`, `YOUR-AWS-ORGANISATION-NAME`, `YOUR-AWS-ORGANISATION-ID`, `YOUR-WF-TENENT`
 
-and save this file as `.chalice/config.json`
+```
+sed -e 's/AWS-ACCOUNT-NUMBER/012345678901/' \
+-e 's/AWS-REGION/eu-west-1/' \
+-e 's/YOUR-AWS-ORGANISATION-ID/o-123456/' \
+-e 's/YOUR-AWS-ORGANISATION-NAME/The Wibble Factory/' \
+-e 's/YOUR-WF-TENENT/wibble-factory/' \
+sample-config.json >.chalice/config.json
+```
+
+### Environment Variables
+
+Set the following environment variables as required in the config file:
+
+* `TRANSITIONVOLUMES` - set to 'false' to just count gp2 disks
+* `IGNOREDISKS` - size in GB, any disk greater than this size will be skipped.
+* `OLDESTFIRST` - set to "true" by default, will transition the disks in order of age.
+* `WAVEFRONT_URL` - the url for direct ingestion by Wavefront.
+* `WFSSMPATH` - the parameter store path to the Wavefront credential.
+* `SNOWSRV` - the parameter store sub-path to the Service-Now credentials.
+
+Save this file as `.chalice/config.json`
 
 
 You will need an AWS profile for the organisation account. Adjust the [Makefile](Makefile) to your needs.  The Director and
 Worker Lambdas require a pre-defined role to run, create these roles with:
 
 ```
-aws --profile your-profile --region your-region cloudformation create-stack --capabilities CAPABILITY_NAMED_IAM --stack-name sreGP23DirectorRoleCF --template-body file://cloudformation/gp23-director-role.yaml
-aws --profile your-profile --region your-region cloudformation create-stack --capabilities CAPABILITY_NAMED_IAM --stack-name sreGP23WorkerRoleCF --template-body file://cloudformation/gp23-worker-role.yaml
+aws --profile your-profile --region your-region \
+cloudformation create-stack \
+--capabilities CAPABILITY_NAMED_IAM \
+--stack-name sreGP23DirectorRoleCF \
+--template-body file://cloudformation/gp23-director-role.yaml
+
+aws --profile your-profile --region your-region \
+cloudformation create-stack \
+--capabilities CAPABILITY_NAMED_IAM \
+--stack-name sreGP23WorkerRoleCF \
+--template-body file://cloudformation/gp23-worker-role.yaml
 ```
 
 To deploy the lambdas
