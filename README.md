@@ -61,6 +61,7 @@ sample-config.json >.chalice/config.json
 
 Set the following environment variables as required in the config file:
 
+* `TRANSITIONVOLUMES` - set to 'false' to just count gp2 disks
 * `IGNOREDISKS` - size in GB, any disk greater than this size will be skipped.
 * `OLDESTFIRST` - set to "true" by default, will transition the disks in order of age.
 * `WAVEFRONT_URL` - the url for direct ingestion by Wavefront.
