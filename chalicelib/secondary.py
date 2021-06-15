@@ -30,17 +30,75 @@ import chalicelib.volumes as vl
 from chalicelib.wflambda import wfwrapper
 
 
-def checkCanDoTransition(dotransition, picked, volstate):
-    """Test that we can transiton this volume."""
+# def checkCanDoTransition(dotransition, picked, volstate):
+#     """Test that we can transiton this volume."""
+#     try:
+#         # are we in dry-run mode (dotransition would be false if so)
+#         if dotransition:
+#             # have we already picked a volume
+#             if not picked:
+#                 # is this volume in a suitable state
+#                 if volstate == "available" or volstate == "in-use":
+#                     return True
+#         return False
+#     except Exception as e:
+#         exci = sys.exc_info()[2]
+#         lineno = exci.tb_lineno
+#         fname = exci.tb_frame.f_code.co_name
+#         ename = type(e).__name__
+#         msg = f"{ename} Exception at line {lineno} in function {fname}: {e}"
+#         print(msg)
+#         raise
+
+def checkCanDoTransition(event, vol, picked):
     try:
-        # are we in dry-run mode (dotransition would be false if so)
-        if dotransition:
-            # have we already picked a volume
-            if not picked:
-                # is this volume in a suitable state
-                if volstate == "available" or volstate == "in-use":
-                    return True
+        if event["transitionvolumes"].lower() != "true":
+            return False
+        if int(vol["Size"]) > int(event["ignoredisks"]):
+            return False
+        if not picked and (vol["State"] == "available" or vol["State"] == "in-use"):
+            return True
         return False
+    except Exception as e:
+    exci = sys.exc_info()[2]
+    lineno = exci.tb_lineno
+    fname = exci.tb_frame.f_code.co_name
+    ename = type(e).__name__
+    msg = f"{ename} Exception at line {lineno} in function {fname}: {e}"
+    print(msg)
+    raise
+
+def volsInRegion2(region, logid, event):
+    """Retrieve list of all gp2/gp3 volumes in the region.
+
+    Test to see if any of the gp3 volumes are still transitioning
+    If not, pick a gp2 volume and attempt to transition it
+    If that fails move to the next gp2 volume and so on
+
+    event is input event dictionary to lambda function
+    """
+    try:
+        header = f"""{event["acctnum"]} {event["acctname"]} {region}:"""
+        # common details for all volumes
+        std = {"region": region, "acctname": event["acctname"], "acctnum": event["acctnum"], "ttl": event["tomorrow"]}
+        if event["acctnum"] is None:
+            raise Exception(f"{logid}: acctnum is None at volsInRegion")
+        # this returns a tuple of 2 lists (gp2-volumes, gp3-vol-in-transition)
+        vols, gp3wait = vl.getGPVols(
+            acctid=event["acctnum"], acctname=event["acctname"], region=region, logid=logid
+        )
+        picked = False
+        # is the last gp3 transition still in progress?
+        if gp3wait is not None:
+            msg = f"""{header}: Volume: {gp3wait["volid"]} in region: {gp3wait["region"]}"""
+            msg += f"""is transitioning, {gp3wait["progress"]}% complete, waiting..."""
+            print(msg)
+            return
+        # check each gp2 volume
+        dotransition = True if event["transitionvolumes"].lower() == "true" else False
+        for vol in vols:
+            # test that we can go ahead
+            if checkCanDoTransition(dotransition, picked, vol["State"]):
     except Exception as e:
         exci = sys.exc_info()[2]
         lineno = exci.tb_lineno
@@ -49,7 +107,6 @@ def checkCanDoTransition(dotransition, picked, volstate):
         msg = f"{ename} Exception at line {lineno} in function {fname}: {e}"
         print(msg)
         raise
-
 
 def volsInRegion(
     region, logid, acctname, acctnum, ttl, Q, dotransition=False, snow=None
@@ -142,6 +199,8 @@ def secondaryLF(event, context):
             "username",
             "password",
             "template_id",
+            "oldestfirst",
+            "ignoredisks",
         ]
         testKeys(reqkeys, event)
         regions = event["regions"].split(",")
