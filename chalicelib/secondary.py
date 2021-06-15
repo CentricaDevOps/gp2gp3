@@ -250,14 +250,14 @@ def secondaryLF(event, context):
         acctnum = event["acctnum"]
         rolename = os.environ.get("ASSUMEROLENAME", "NOTSET")
         acctname = act.assumeRoleAlias(rolename, acctnum, "eu-west-1")
-        tomorrow = event["tomorrow"]
-        dotransition = True if event["transitionvolumes"] == "true" else False
+        # tomorrow = event["tomorrow"]
+        # dotransition = True if event["transitionvolumes"] == "true" else False
         Q = queue.Queue()
         threads = []
-        gargs = [acctname, acctnum, tomorrow, Q, dotransition, event]
+        # gargs = [acctname, acctnum, tomorrow, Q, dotransition, event]
         for xcn, region in enumerate(regions, start=1):
-            targs = [region, xcn]
-            targs.extend(gargs)
+            targs = [region, xcn, event]
+            # targs.extend(gargs)
             thread = threading.Thread(target=volsInRegion, args=targs)
             threads.append(thread)
         # start each thread
