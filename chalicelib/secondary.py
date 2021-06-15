@@ -250,6 +250,7 @@ def secondaryLF(event, context):
         acctnum = event["acctnum"]
         rolename = os.environ.get("ASSUMEROLENAME", "NOTSET")
         acctname = act.assumeRoleAlias(rolename, acctnum, "eu-west-1")
+        event["acctname"] = acctname
         # tomorrow = event["tomorrow"]
         # dotransition = True if event["transitionvolumes"] == "true" else False
         Q = queue.Queue()
