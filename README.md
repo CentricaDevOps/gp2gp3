@@ -44,9 +44,30 @@ mkdir .chalice
 
 Adjust the [Sample AWS Chalice Configuration](sample-config.json) for your AWS Organisation.
 
+### Organisation Account Configuration
+
 You will need to replace `AWS-ACCOUNT-NUMBER`, `AWS-REGION`, `YOUR-AWS-ORGANISATION-NAME`, `YOUR-AWS-ORGANISATION-ID`, `YOUR-WF-TENENT`
 
-and save this file as `.chalice/config.json`
+```
+sed -e 's/AWS-ACCOUNT-NUMBER/012345678901/' \
+-e 's/AWS-REGION/eu-west-1/' \
+-e 's/YOUR-AWS-ORGANISATION-ID/o-123456/' \
+-e 's/YOUR-AWS-ORGANISATION-NAME/The Wibble Factory/' \
+-e 's/YOUR-WF-TENENT/wibble-factory/' \
+sample-config.json >.chalice/config.json
+```
+
+### Environment Variables
+
+Set the following environment variables as required in the config file:
+
+`IGNOREDISKS` - size in GB, any disk greater than this size will be skipped.
+`OLDESTFIRST` - set to "true" by default, will transition the disks in order of age.
+`WAVEFRONT_URL` - the url for direct ingestion by Wavefront.
+`WFSSMPATH` - the parameter store path to the Wavefront credential.
+`SNOWSRV` - the parameter store sub-path to the Service-Now credentials.
+
+Save this file as `.chalice/config.json`
 
 
 You will need an AWS profile for the organisation account. Adjust the [Makefile](Makefile) to your needs.  The Director and

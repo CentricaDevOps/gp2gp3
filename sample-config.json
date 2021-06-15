@@ -21,7 +21,7 @@
         "ORGID": "YOUR-AWS-ORGANISATION-ID",
         "ORGNAME": "YOUR-AWS-ORGANISATION-NAME",
         "SNOWSRV": "dev",
-        "IGNOREDISKS": 999999999999,
+        "IGNOREDISKS": 999,
         "OLDESTFIRST": "True"
     },
     "stages": {
