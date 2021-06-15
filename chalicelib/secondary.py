@@ -104,8 +104,13 @@ def volsInRegion(region, logid, event):
             msg += f""" is transitioning, {gp3wait["progress"]}% complete, waiting..."""
             print(msg)
             return
+        if event["oldestfirst"].lower() == "true":
+            # sort by CreateTime, oldest first
+            svols = sorted(vols, key=lambda k: k["CreateTime"])
+        else:
+            svols = vols
         # check each gp2 volume
-        for vol in vols:
+        for vol in svols:
             # test that we can go ahead
             if checkCanDoTransition(event, vol, picked):
                 if vl.transitionVolume(
