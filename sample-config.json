@@ -5,7 +5,10 @@
     "tags": {
         "Name": "gp2gp3-lambda",
         "product": "gp2gp3",
-        "role": "gp2gp3 lambda"
+        "role": "gp2gp3 lambda",
+        "CostCode": "xxxxxxxx",
+        "ServiceOwner": "SRE",
+        "ServiceName": "gp23"
     },
     "environment_variables": {
         "WAVEFRONT_URL": "https://YOUR-WF-TENENT.wavefront.com",
@@ -13,10 +16,13 @@
         "ACCOUNTSTABLE": "This-is-not-required-anymore",
         "SECONDARYLAMBDA": "arn:aws:lambda:AWS-REGION:AWS-ACCOUNT-NUMBER:function:gp2gp3-prod-secondaryLambda",
         "ASSUMEROLENAME": "OrganizationAccountAccessRole",
-        "TRANSITIONVOLUMES": "false",
+        "TRANSITIONVOLUMES": "False",
         "WFSSMPATH": "/sre/wavefront/directingest",
         "ORGID": "YOUR-AWS-ORGANISATION-ID",
-        "ORGNAME": "YOUR-AWS-ORGANISATION-NAME"
+        "ORGNAME": "YOUR-AWS-ORGANISATION-NAME",
+        "SNOWSRV": "dev",
+        "IGNOREDISKS": 999999999999,
+        "OLDESTFIRST": "True"
     },
     "stages": {
         "prod": {
