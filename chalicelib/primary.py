@@ -128,7 +128,7 @@ def doPrimary():
             "TRANSITIONVOLUMES", "false"
         ).lower()
         for acct in tids:
-            if doLaunch(acct, adict, prams, kwargs):
+            if doLaunch(lam, acct, adict, prams, kwargs):
                 tn += 1
             else:
                 fnc += 1
