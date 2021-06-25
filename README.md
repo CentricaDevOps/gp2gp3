@@ -57,6 +57,14 @@ sed -e 's/AWS-ACCOUNT-NUMBER/012345678901/' \
 sample-config.json >.chalice/config.json
 ```
 
+### Selective Accounts
+
+You can now select which accounts to mark to have their volumes transitioned.  gp23 will still report on all the accounts in the
+organisation, but only those accounts set in the environment variable `ONLYACCOUNTS` will be transitioned.  This still respects
+the env. var. `TRANSITIONVOLUMES`, if that is false then no volumes will be transitioned.
+
+If the env. var. `ONLYACCOUNTS` is empty or missing the app still works on all accounts in the organisation.
+
 ### Environment Variables
 
 Set the following environment variables as required in the config file:
@@ -67,6 +75,7 @@ Set the following environment variables as required in the config file:
 * `WAVEFRONT_URL` - the url for direct ingestion by Wavefront.
 * `WFSSMPATH` - the parameter store path to the Wavefront credential.
 * `SNOWSRV` - the parameter store sub-path to the Service-Now credentials.
+* `ONLYACCOUNTS`  - a list of account numbers to transition volumes (comma seperated string)
 
 Save this file as `.chalice/config.json`
 
