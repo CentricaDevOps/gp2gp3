@@ -137,7 +137,7 @@ def volsInRegion(region, logid, event):
                         f"""{msghead} Failed to start transitioning volume {vol["VolumeId"]}."""
                     )
                     vol.update(std)
-                    Q.put(vol)
+                    event["Q"].put(vol)
             else:
                 vol.update(std)
                 event["Q"].put(vol)
@@ -254,6 +254,7 @@ def secondaryLF(event, context):
         # tomorrow = event["tomorrow"]
         # dotransition = True if event["transitionvolumes"] == "true" else False
         Q = queue.Queue()
+        event["Q"] = Q
         threads = []
         # gargs = [acctname, acctnum, tomorrow, Q, dotransition, event]
         for xcn, region in enumerate(regions, start=1):

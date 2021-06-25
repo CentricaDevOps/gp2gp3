@@ -57,6 +57,25 @@ def setupParameters(server="dev_test"):
         raise
 
 
+def getAIDs():
+    try:
+        allids = [x["Id"] for x in act.getAccountIdsOrg() if x["Status"] == "ACTIVE"]
+        onlyaccts = os.environ.get("ONLYACCOUNTS", "NOTSET")
+        tids = (
+            [x.strip() for x in onlyaccts.split(",")] if onlyaccts != "NOTSET" else []
+        )
+        reportids = [x for x in allids if x not in tids]
+        return (reportids, tids)
+    except Exception as e:
+        exci = sys.exc_info()[2]
+        lineno = exci.tb_lineno
+        fname = exci.tb_frame.f_code.co_name
+        ename = type(e).__name__
+        msg = f"{ename} Exception at line {lineno} in function {fname}: {e}"
+        print(msg)
+        raise
+
+
 def doPrimary():
     """Director code:
 
@@ -66,8 +85,13 @@ def doPrimary():
     """
     try:
         tomorrow = int(time.time()) + (3600 * 23) + (45 * 60)  # 23 hrs and 45 minutes
-        oacctids = act.getAccountIdsOrg()
-        acctids = [x["Id"] for x in oacctids if x["Status"] == "ACTIVE"]
+        reportids, tids = getAIDs()
+        # oacctids = act.getAccountIdsOrg()
+        # accts = os.environ.get("ONLYACCOUNTS", "NOTSET")
+        # if accts == "NOTSET":
+        #     acctids = [x["Id"] for x in oacctids if x["Status"] == "ACTIVE"]
+        # else:
+        #     acctids = [x.strip() for x in accts.split(",")]
         regions = act.getRegions()
         lam = act.getClient("lambda")
         snowsrv = os.environ.get("SNOWSRV", "dev_test")
@@ -77,32 +101,64 @@ def doPrimary():
             raise Exception(
                 "Secondary lambda arn not set in the environment under the key SECONDARYLAMBDA"
             )
-        if acctids is None:
+        if reportids is None:
             raise Exception("Failed to obtain any account ids.")
+        if tids is None:
+            raise Exception("Failed to obtain account ids from environment")
         kwargs = {
             "FunctionName": f"{seclambdaarn}",
             "InvocationType": "Event",
         }
+        adict = {
+            "regions": regions,
+            "tomorrow": tomorrow,
+            "transitionvolumes": "fales",
+            "oldestfirst": os.environ.get("OLDESTFIRST", "true").lower(),
+            "ignoredisks": os.environ.get("IGNOREDISKS", "999"),
+        }
         fnc = 0
-        for cn, acct in enumerate(acctids, start=1):
-            xdict = {
-                "acctnum": acct,
-                "regions": regions,
-                "tomorrow": tomorrow,
-                "transitionvolumes": os.environ.get(
-                    "TRANSITIONVOLUMES", "false"
-                ).lower(),
-                "oldestfirst": os.environ.get("OLDESTFIRST", "true").lower(),
-                "ignoredisks": os.environ.get("IGNOREDISKS", "999"),
-            }
-            xdict.update(prams)
-            # print(f"xdict: {xdict}")
-            kwargs["Payload"] = json.dumps(xdict)
-            res = lam.invoke(**kwargs)
-            if res["StatusCode"] != 202:
-                print(f"Failed to launch {seclambaarn} in account {acctid}")
+        rn = 0
+        tn = 0
+        for acct in reportids:
+            if doLaunch(acct, adict, prams, kwargs):
+                rn += 1
+            else:
                 fnc += 1
-        print(f"{fnc} secondaries failed to run, {cn-fnc} started successfully")
+        adict["transitionvolumes"] = os.environ.get(
+            "TRANSITIONVOLUMES", "false"
+        ).lower()
+        for acct in tids:
+            if doLaunch(acct, adict, prams, kwargs):
+                tn += 1
+            else:
+                fnc += 1
+        print(
+            f"{fnc} secondaries failed to run, {rn} reporters started successfully, {tn} transitioners started successfully."
+        )
+    except Exception as e:
+        exci = sys.exc_info()[2]
+        lineno = exci.tb_lineno
+        fname = exci.tb_frame.f_code.co_name
+        ename = type(e).__name__
+        msg = f"{ename} Exception at line {lineno} in function {fname}: {e}"
+        print(msg)
+        raise
+
+
+def doLaunch(acct, adict, prams, kwargs):
+    try:
+        xdict = {
+            "acctnum": acct,
+        }
+        xdict.update(adict)
+        xdict.update(prams)
+        # print(f"xdict: {xdict}")
+        kwargs["Payload"] = json.dumps(xdict)
+        res = lam.invoke(**kwargs)
+        if res["StatusCode"] != 202:
+            print(f'Failed to launch {kwargs["FunctionName"]} in account {acct}.')
+            return False
+        return True
     except Exception as e:
         exci = sys.exc_info()[2]
         lineno = exci.tb_lineno
