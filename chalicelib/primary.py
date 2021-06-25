@@ -120,7 +120,7 @@ def doPrimary():
         rn = 0
         tn = 0
         for acct in reportids:
-            if doLaunch(acct, adict, prams, kwargs):
+            if doLaunch(lam, acct, adict, prams, kwargs):
                 rn += 1
             else:
                 fnc += 1
@@ -145,7 +145,7 @@ def doPrimary():
         raise
 
 
-def doLaunch(acct, adict, prams, kwargs):
+def doLaunch(lam, acct, adict, prams, kwargs):
     try:
         xdict = {
             "acctnum": acct,
