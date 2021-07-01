@@ -133,11 +133,11 @@ def volsInRegion(region, logid, event):
                         )
                     else:
                         print(
-                            f"""{msghead} Failed to updated Snow for vol {vol["VolumeId"]}"""
+                            f"""{msghead} Failed to updated Snow for {vol["Size"]}GB volume {vol["VolumeId"]}"""
                         )
                 else:
                     print(
-                        f"""{msghead} Failed to start transitioning volume {vol["VolumeId"]}."""
+                        f"""{msghead} Failed to start transitioning {vol["Size"]}GB volume {vol["VolumeId"]}."""
                     )
                     vol.update(std)
                     event["Q"].put(vol)
