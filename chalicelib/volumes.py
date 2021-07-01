@@ -108,6 +108,7 @@ def getGPVols(acctid=None, acctname="", region="eu-west-1", logid=0):
                         gp3wait = {
                             "region": region,
                             "volid": mods[0]["VolumeId"],
+                            "size": mods[0]["OriginalSize"],
                             "progress": mods[0]["Progress"],
                         }
             except botocore.exceptions.ClientError:
