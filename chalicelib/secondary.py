@@ -56,6 +56,7 @@ def checkCanDoTransition(event, vol, picked):
         if event["transitionvolumes"].lower() != "true":
             return False
         if int(vol["Size"]) > int(event["ignoredisks"]):
+            print(f"""Ignoring {vol["Size"]}GB Volume {vol["VolumeId"]}""")
             return False
         if not picked and (vol["State"] == "available" or vol["State"] == "in-use"):
             return True
