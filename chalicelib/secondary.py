@@ -118,7 +118,7 @@ def volsInRegion(region, logid, event):
                     vol["VolumeId"], event["acctnum"], region=region, logid=logid
                 ):
                     print(
-                        f"""{msghead} Transitioning {vol["VolumeId"]} from gp2 to gp3"""
+                        f"""{msghead} Transitioning {vol["Size"]}GB {vol["VolumeId"]} from gp2 to gp3"""
                     )
                     picked = True
                     if changeRequest(
@@ -128,7 +128,9 @@ def volsInRegion(region, logid, event):
                         event["acctnum"],
                         region,
                     ):
-                        print(f"""{msghead} Updated Snow for vol {vol["VolumeId"]}""")
+                        print(
+                            f"""{msghead} Updated Snow for {vol["Size"]}GB volume {vol["VolumeId"]}"""
+                        )
                     else:
                         print(
                             f"""{msghead} Failed to updated Snow for vol {vol["VolumeId"]}"""
