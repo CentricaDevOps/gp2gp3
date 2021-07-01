@@ -101,7 +101,7 @@ def volsInRegion(region, logid, event):
         picked = False
         # is the last gp3 transition still in progress?
         if gp3wait is not None:
-            msg = f"""{msghead}: Volume: {gp3wait["volid"]} in region: {gp3wait["region"]}"""
+            msg = f"""{msghead}: {gp3wait["size"]}GB Volume: {gp3wait["volid"]} in region: {gp3wait["region"]}"""
             msg += f""" is transitioning, {gp3wait["progress"]}% complete, waiting..."""
             print(msg)
             return
