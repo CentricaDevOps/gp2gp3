@@ -54,12 +54,14 @@ from chalicelib.wflambda import wfwrapper
 def checkCanDoTransition(event, vol, picked):
     try:
         if event["transitionvolumes"].lower() != "true":
+            print(f'transition volumes: {event["transitionvolumes"]}')
             return False
         if int(vol["Size"]) > int(event["ignoredisks"]):
             print(f"""Ignoring {vol["Size"]}GB Volume {vol["VolumeId"]}""")
             return False
         if not picked and (vol["State"] == "available" or vol["State"] == "in-use"):
             return True
+        print(f'picked: {picked}, state: {vol["State"]}')
         return False
     except Exception as e:
         exci = sys.exc_info()[2]

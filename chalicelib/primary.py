@@ -105,6 +105,11 @@ def doPrimary():
             raise Exception("Failed to obtain any account ids.")
         if tids is None:
             raise Exception("Failed to obtain account ids from environment")
+        # if we have no specific accounts do them all
+        # this still depends on the 'transitionvolumes' env. var.
+        if len(tids) == 0:
+            tids = reportids
+            reportids = []
         kwargs = {
             "FunctionName": f"{seclambdaarn}",
             "InvocationType": "Event",
@@ -112,7 +117,7 @@ def doPrimary():
         adict = {
             "regions": regions,
             "tomorrow": tomorrow,
-            "transitionvolumes": "fales",
+            "transitionvolumes": "false",
             "oldestfirst": os.environ.get("OLDESTFIRST", "true").lower(),
             "ignoredisks": os.environ.get("IGNOREDISKS", "999"),
         }
