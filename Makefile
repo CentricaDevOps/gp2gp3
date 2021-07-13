@@ -59,7 +59,7 @@ vodadelete:
 
 sapdeploy:
 	# test we have the correct profile enabled
-	AWS_PROFILE=sap-payer aws organizations list-accounts |grep aws-GFSSAP-payer+CENNONPROD1 >/dev/null
+	AWS_PROFILE=gfssap-payer aws organizations list-accounts |grep aws-GFSSAP-payer+CENNONPROD1 >/dev/null
 	rm .chalice/config.json
 	rm .chalice/deployed
 	cd .chalice && ln -s sap-config.json config.json && ln -s sap-deployed deployed
@@ -68,7 +68,7 @@ sapdeploy:
 
 sapdelete:
 	# test we have the correct profile enabled
-	AWS_PROFILE=sap-payer aws organizations list-accounts |grep aws-GFSSAP-payer+CENNONPROD1 >/dev/null
+	AWS_PROFILE=gfssap-payer aws organizations list-accounts |grep aws-GFSSAP-payer+CENNONPROD1 >/dev/null
 	rm .chalice/config.json
 	rm .chalice/deployed
 	cd .chalice && ln -s sap-config.json config.json && ln -s sap-deployed deployed
@@ -77,7 +77,7 @@ sapdelete:
 
 cbilldeploy:
 	# test we have the correct profile enabled
-	AWS_PROFILE=cbill-payer aws organizations list-accounts |grep  aws.CentricaBilling@centrica.com >/dev/null
+	AWS_PROFILE=centricabilling aws organizations list-accounts |grep  aws.CentricaBilling@centrica.com >/dev/null
 	rm .chalice/config.json
 	rm .chalice/deployed
 	cd .chalice && ln -s cbill-config.json config.json && ln -s cbill-deployed deployed
@@ -86,7 +86,7 @@ cbilldeploy:
 
 cbilldelete:
 	# test we have the correct profile enabled
-	AWS_PROFILE=cbill-payer aws organizations list-accounts |grep  aws.CentricaBilling@centrica.com >/dev/null
+	AWS_PROFILE=centricabilling aws organizations list-accounts |grep  aws.CentricaBilling@centrica.com >/dev/null
 	rm .chalice/config.json
 	rm .chalice/deployed
 	cd .chalice && ln -s cbill-config.json config.json && ln -s cbill-deployed deployed
