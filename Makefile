@@ -63,7 +63,7 @@ sapdeploy:
 	rm .chalice/config.json
 	rm .chalice/deployed
 	cd .chalice && ln -s sap-config.json config.json && ln -s sap-deployed deployed
-	AWS_DEFAULT_REGION=eu-west-1 AWS_PROFILE=sap-payer poetry run chalice deploy --stage=prod
+	AWS_DEFAULT_REGION=eu-west-1 AWS_PROFILE=gfssap-payer poetry run chalice deploy --stage=prod
 
 
 sapdelete:
@@ -72,7 +72,7 @@ sapdelete:
 	rm .chalice/config.json
 	rm .chalice/deployed
 	cd .chalice && ln -s sap-config.json config.json && ln -s sap-deployed deployed
-	AWS_DEFAULT_REGION=eu-west-1 AWS_PROFILE=sap-payer poetry run chalice delete --stage=prod
+	AWS_DEFAULT_REGION=eu-west-1 AWS_PROFILE=gfssap-payer poetry run chalice delete --stage=prod
 
 
 cbilldeploy:
@@ -81,7 +81,7 @@ cbilldeploy:
 	rm .chalice/config.json
 	rm .chalice/deployed
 	cd .chalice && ln -s cbill-config.json config.json && ln -s cbill-deployed deployed
-	AWS_DEFAULT_REGION=eu-west-1 AWS_PROFILE=cbill-payer poetry run chalice deploy --stage=prod
+	AWS_DEFAULT_REGION=eu-west-1 AWS_PROFILE=centricabilling poetry run chalice deploy --stage=prod
 
 
 cbilldelete:
@@ -90,4 +90,4 @@ cbilldelete:
 	rm .chalice/config.json
 	rm .chalice/deployed
 	cd .chalice && ln -s cbill-config.json config.json && ln -s cbill-deployed deployed
-	AWS_DEFAULT_REGION=eu-west-1 AWS_PROFILE=cbill-payer poetry run chalice delete --stage=prod
+	AWS_DEFAULT_REGION=eu-west-1 AWS_PROFILE=centricabilling poetry run chalice delete --stage=prod
