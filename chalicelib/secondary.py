@@ -30,34 +30,14 @@ import chalicelib.volumes as vl
 from chalicelib.wflambda import wfwrapper
 
 
-# def checkCanDoTransition(dotransition, picked, volstate):
-#     """Test that we can transiton this volume."""
-#     try:
-#         # are we in dry-run mode (dotransition would be false if so)
-#         if dotransition:
-#             # have we already picked a volume
-#             if not picked:
-#                 # is this volume in a suitable state
-#                 if volstate == "available" or volstate == "in-use":
-#                     return True
-#         return False
-#     except Exception as e:
-#         exci = sys.exc_info()[2]
-#         lineno = exci.tb_lineno
-#         fname = exci.tb_frame.f_code.co_name
-#         ename = type(e).__name__
-#         msg = f"{ename} Exception at line {lineno} in function {fname}: {e}"
-#         print(msg)
-#         raise
-
-
-def checkCanDoTransition(event, vol, picked):
+def checkCanDoTransition(event, vol, picked, region):
     try:
+        msghead = f"""{event["acctnum"]} {event["acctname"]} {region}:"""
         if event["transitionvolumes"].lower() != "true":
-            print(f'transition volumes: {event["transitionvolumes"]}')
+            # print(f'transition volumes: {event["transitionvolumes"]}')
             return False
         if int(vol["Size"]) > int(event["ignoredisks"]):
-            print(f"""Ignoring {vol["Size"]}GB Volume {vol["VolumeId"]}""")
+            print(f"""{msghead} Ignoring {vol["Size"]}GB Volume {vol["VolumeId"]}""")
             return False
         if not picked and (vol["State"] == "available" or vol["State"] == "in-use"):
             return True
@@ -115,7 +95,7 @@ def volsInRegion(region, logid, event):
         # check each gp2 volume
         for vol in svols:
             # test that we can go ahead
-            if checkCanDoTransition(event, vol, picked):
+            if checkCanDoTransition(event, vol, picked, region):
                 if vl.transitionVolume(
                     vol["VolumeId"], event["acctnum"], region=region, logid=logid
                 ):
@@ -154,69 +134,6 @@ def volsInRegion(region, logid, event):
         msg = f"{ename} Exception at line {lineno} in function {fname}: {e}"
         print(msg)
         raise
-
-
-# def volsInRegion(
-#     region, logid, acctname, acctnum, ttl, Q, dotransition=False, snow=None
-# ):
-#     """Retrieve list of all gp2/gp3 volumes in the region.
-#
-#     Test to see if any of the gp3 volumes are still transitioning
-#     If not, pick a gp2 volume and attempt to transition it
-#     If that fails move to the next gp2 volume and so on
-#     """
-#     try:
-#         # common details for all volumes
-#         std = {"region": region, "acctname": acctname, "acctnum": acctnum, "ttl": ttl}
-#         if acctnum is None:
-#             raise Exception(f"{logid}: acctnum is None at volsInRegion")
-#         # this returns a tuple of 2 lists (gp2-volumes, gp3-vol-in-transition)
-#         vols, gp3wait = vl.getGPVols(
-#             acctid=acctnum, acctname=acctname, region=region, logid=logid
-#         )
-#         picked = False
-#         # is the last gp3 transition still in progress?
-#         if gp3wait is not None:
-#             print(
-#                 f"""{acctnum} {acctname} {region}: Volume: {gp3wait["volid"]} in region: {gp3wait["region"]} is transitioning, {gp3wait["progress"]}% complete, waiting..."""
-#             )
-#             return
-#         # check each gp2 volume
-#         for vol in vols:
-#             # test that we can go ahead
-#             if checkCanDoTransition(dotransition, picked, vol["State"]):
-#                 if vl.transitionVolume(
-#                     vol["VolumeId"], acctid=acctnum, region=region, logid=logid
-#                 ):
-#                     print(
-#                         f"""{logid}: {acctnum} {acctname} {region}: Transitioning {vol["VolumeId"]} from gp2 to gp3"""
-#                     )
-#                     picked = True
-#                     if changeRequest(snow, vol["VolumeId"], acctname, acctnum, region):
-#                         print(
-#                             f"""{logid}: {acctnum} {acctname} {region}: Updated Snow for vol {vol["VolumeId"]}"""
-#                         )
-#                     else:
-#                         print(
-#                             f"""{logid}: {acctnum} {acctname} {region}: Failed to updated Snow for vol {vol["VolumeId"]}"""
-#                         )
-#                 else:
-#                     print(
-#                         f"""{logid}: {acctnum} {acctname} {region}: Failed to start transitioning volume {vol["VolumeId"]}."""
-#                     )
-#                     vol.update(std)
-#                     Q.put(vol)
-#             else:
-#                 vol.update(std)
-#                 Q.put(vol)
-#     except Exception as e:
-#         exci = sys.exc_info()[2]
-#         lineno = exci.tb_lineno
-#         fname = exci.tb_frame.f_code.co_name
-#         ename = type(e).__name__
-#         msg = f"{acctnum} {acctname}: {ename} Exception at line {lineno} in function {fname}: {e}"
-#         print(msg)
-#         raise
 
 
 def testKeys(keys, xdict):
