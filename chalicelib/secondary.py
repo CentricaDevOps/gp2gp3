@@ -40,8 +40,13 @@ def checkCanDoTransition(event, vol, picked, region):
             print(f"""{msghead} Ignoring {vol["Size"]}GB Volume {vol["VolumeId"]}""")
             return False
         if not picked and (vol["State"] == "available" or vol["State"] == "in-use"):
+            print(
+                f"""{msghead} not picked yet, {vol["VolumeId"]}, {vol["State"]} - returning true"""
+            )
             return True
-        # print(f'picked: {picked}, state: {vol["State"]}')
+        print(
+            f'{msghead} picked: {picked}, vol: {vol["VolumeId"]}, state: {vol["State"]}'
+        )
         return False
     except Exception as e:
         exci = sys.exc_info()[2]
